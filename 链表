@@ -1,0 +1,145 @@
+#include<iostream>
+using namespace std;
+template<int T>
+struct chainNode {   //节点的构造 
+	T element;
+	chainNode T* next;
+	chainNode(const T& element, chainNode <T>* next = NULL) {  
+		this->element = element;
+		this->next = next;
+	}
+
+};
+
+template<class T>
+class chain {
+public :
+	chain(int initialCapacity = 10);  //构造函数
+	~chain();  //释放链所申请的节点空间，请务必建立
+
+	//调用链的方法
+	void creatChian(int n);
+	T& get(int index)const;
+	int indexof(const T &element) const;
+	void erase(int &theIndex);   //删减函数只需要一个目录，因为删减是需要对其构造函数进行操作，故不需要给他声明const
+	void insert(int &theIndex ,const T&element);   // 插入元素以及插入的地方，因为插入是对其进行操作，故不需要给他声明const
+	output(ostream &out)const；
+
+private:
+	int listsize = 0;
+	chainNode<T>* firstNode;
+
+};
+
+//接下来我们去实现一下每一个构造函数  先从基本的构造函数，再到析构函数，最后把对chain的几个操作都实现以下
+
+template<class T>
+chain<T>::chain(int initialCapacity) {
+	if (initialCapacity < 1) {
+		ostream s; s << "Initial capacity = " << initialCapacity << "must be 0 ";
+		throw illegalparameterValue(s._Stdstr());
+	}
+	firstNode = NULL;			
+   	listSize = 0;
+
+}
+
+template<class T>
+chain<T> :: ~chain() {				//释放所构建的链表的空间
+	while (firstNode != NULL) {
+		chain<T>* nextNode = firstNode - next;
+		delete firstNode;
+		firstNode = nextNode;
+	}
+
+}
+template<class T>
+void chain<T>::creatChian(int n) {
+	chainNode* pnew, * ptemp;
+	pnew = new chainNode;
+	ptemp = firstNode;
+	if (n < 0) {
+		cout << "please input a correct number to creat a chain";
+		return(EXIT_FAILURE);
+	}
+	for (int i = 0; i < n; i++) {
+		pnew = new chianNode;
+		cout << "please input the " << i + 1 << "the data of this chainNode";
+		cin >> pnew->element;
+		ptemp->next = pnew;
+		ptemp = pnew;
+
+	}
+
+
+}
+
+
+template<class T>
+T& chain<T>::get(int index)const {
+	chainNode<T>* currentNode = firstNode;
+	for (int i = 0; i < index; i++) {
+		current = current->nex;
+		return currentNode->element;
+	}
+}
+
+
+template<class T>
+void chain<T>::insert(int& theIndex, const T& element) {
+	if (theIdex <0 || theIdex >listsiez) {
+		ostringstream s;
+		s << "index = " << theIndex << "size = " << listsize;
+		throw illegalIndex;
+	}
+	if (index == 0) {
+		firstNode = new chainNode<T>(the element, firstNode);
+	}
+	else {
+		chainNode<T>* p = firstNode;
+		for (int i = 0; i < index; i++) {
+			p = p->next;
+		}
+		p->next = new chainNode<T>(the element, p->next);
+	}
+	listsize++;
+}
+
+template<class T>
+void chain<T>::erase(int& theIndex) {
+	if (theIndex<0 || theIndex>listsize) {
+		return 0;
+	}
+	chainNode<T>* deleteNode;
+	if (theIndex == 0) {
+		deleteNode = firstNode;
+		firstNode = firstNode->next;
+	}
+	else {
+		chainNode<T>* p = firstNode;
+		for (int i = 0; i < theIndex; i++) {
+			p = p->next;
+		}
+		deleteNode = p->next;
+		p->next = p->next->next;
+	}
+	listsiez--;
+	delete deleteNode;
+}
+
+template<class T>
+int chain<T>::indexof(const T& theElement) const {
+	chainNode<T>* currentNode = firstNode;
+	int index = 0;
+	while (currentNode != NULL || currentNode->element = !theElement) {
+		currentNode = currentNode->element;
+		index++;
+
+	}
+	if (currentNode == NULL) {
+		return -1
+	}else
+	{
+		return index;
+	}
+}
