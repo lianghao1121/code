@@ -1,0 +1,66 @@
+#include<iostream>  //BELONGS TO LIANGHAO  
+#include<vector>
+#include<queue>
+using namespace std;
+char room[20][20];
+int dir[4][2] = { {-1,0}, //向左走
+				{0,-1},	//向上走
+				{1,0},	//向右走
+				{0,1}	//向下走
+};
+int Wx, Hy, num; //Wx行，Hy列  num用来统计数目  
+#define CHECK(x,y) {x<WX&&x>=0&& y < Hy&&y >= 0};
+void BFS(int dx, int dy);  //输入物体所在位置，开始BFS 
+int main() {		//构造迷宫，以及确定人物位置
+	int dx=0, dy=0, x=0, y=0;	//dx，dy是人物所在的位置，x和y是下面所需要for的变量
+	while (cin >> Wx >> Hy) {   //输入这个迷宫的规格，这里输入一次就好了，也就是让while来判断是否有istream
+		if (Wx == 0 && Hy == 0) {			//如果这个迷宫的规格为0，则会直接结束循环
+			break;
+		}
+		for (y = 0; y < Hy; y++) {			//for循环来在全局变量room中创建迷宫，不断地cin
+			for (x = 0; x < Wx; x++) {
+				cin >> room[x][y];
+				if (room[x][y] == '@') {	//当遇到‘@’时候，即为物体所在位置，将其给dx，dy，然后传入到BFS函数中去
+					dx = x;
+					dy = y;
+				}
+			}
+		}
+		num = 0;
+		BFS(dx, dy);  
+		cout << num << endl;  //num为可走的位置有多少
+	}
+	return num;
+
+}
+struct node { int x; int y; };
+void BFS(int dx, int dy) {	
+	num = 1;  //将所在为位置也算进去可以走的步
+	queue<node> q;					/* 创建个队列*/
+	node start, next;		// 定义个start和next，用于探索剩余的步骤
+	start.x = dx;			/*顾名思义，将你所在的位置的dx，dy赋与start，代表着你从这一点开始*/
+	start.y = dy;
+	q.push(start);			/* 将startpush进队列里  */
+	while (!q.empty()) {		
+/*判断q是否为空，如果是空，则说明走到尽头了，因为在循环里，会不断地有pop，如果循环没有再进一步则会不断地pop，最后结束循环*/
+		start = q.front();		
+/*start等于q.front是每次循环的时候都会执行一次，因为每次都会pop掉顶端元素，top元素需要刷新*/
+		q.pop();	
+/*每次循环pop一次，为下个循环判断下一个位置做基础*/
+		for(int i =0;i<4;i++){	
+/*这里是根据前面所定义的位移数组所设计的逻辑上真正意义上实现位移操作，根据for不断循环来改变next的位置，此位置是平面位置，仅需要x，y
+的位移判断，当next有了各个方向位置之后，其位置上的字符会在main函数里面输入，只需要判断其字符是否是’.'，如果是的话，说明其可以走这个地
+方，并且将其push进queue中说明是下个位置判断，next的值是start的值加上1，-1，也就是x，y轴上的实现*/
+			next.x = start.x + dir[i][0];
+			next.y = start.y + dir[i][1];
+/*循环的最后来判断chaeck，之前定义的check，来判断x，y是否超出迷宫的界限，如果没有超过，则可以将其push进queue，如果超出
+界限，则此次循环将不会有任何入队的操作，最后还需要将next的位置设置为’#',避免下次循环时候将其判断为‘.'也进行运算*/
+			if (CHECK(next.x, next.y) && room[next.x][next.y] == '.') {
+				room[next.x][next.y] = '#';
+				num++;
+				q.push(next);
+			}
+/*以上为BFS的全部操作*/
+		}
+	}
+}
