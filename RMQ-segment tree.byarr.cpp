@@ -35,6 +35,24 @@ void updataTree(int arr[], int tree[], int node, int start, int end, int idx, in
 		tree[node] = tree[left_node] + tree[right_node];
 	}
 }
+int query_tree(int arr[], int tree[], int& node, int start, int end, int& L, int& R) {
+			/*此树需要求需求范围的的序列元素的和，sum，和其他的一样，需要原始序列的数组，以及以数组储存的线段二叉树，和其他的函数
+类似，但是不同的是此函数需要所求序列的区间，也就L和R*/
+	if (R<start || L>end) return 0;
+	if (start == end) {
+		return arr[node];
+	}
+	else if (L <= start && end >= R) {
+		return tree[node];
+	}else {
+		int mid = (start + end) / 2;
+		int left_node = 2 * node + 1;
+		int right_node = 2 * node + 2;
+		int sum_left = query_tree(arr, tree, left_node, start, mid, L, R);
+		int sum_right = query_tree(arr, tree, right_node, mid + 1, end, L, R);
+		return sum_left + sum_right;
+	}
+}
 int main() {
 	int arr[] = {1,3,5,7,9,11};
 	auto size =6;
@@ -48,6 +66,7 @@ int main() {
 数组来容纳哦，还需要一个数组表示的线段树的容器，以及抽象线段树的根，也就是容器数组的第一个位置0，接下来就需要start和end，也就是所
 给序列的数组的开始下表和最后一个元素的下表，最后的idx是index的缩写，也就是说是user所需要改所给序列的位置，val则为需改修改原序列的值
 */
+	query_tree(arr, tree, 0, 0, size - 1, L, R);
 
 
 }
